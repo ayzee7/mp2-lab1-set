@@ -9,7 +9,7 @@
 #include <memory>
 #include <exception>
 #include <bitset>
-#define MAX(a, b) ((a) > (b) ? (a):(b))
+
 static const int SIZE = sizeof(TELEM) * 8;
 
 TBitField::TBitField(int len)
@@ -51,7 +51,6 @@ int TBitField::GetMemIndex(const int n) const // индекс Мем для би
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
 {
-    //cout << TELEM(1 << n) << endl;
     return TELEM(1 << n);
 }
 
@@ -68,7 +67,6 @@ void TBitField::SetBit(const int n) // установить бит
         throw exception("Invalid bit index");
     }
     pMem[GetMemIndex(n)] = pMem[GetMemIndex(n)] | GetMemMask(n);
-    //cout << *this << endl;
 }
 
 void TBitField::ClrBit(const int n) // очистить бит
@@ -76,8 +74,8 @@ void TBitField::ClrBit(const int n) // очистить бит
     if (n < 0 || n >= BitLen) {
         throw exception("Invalid bit index");
     }
-    pMem[GetMemIndex(n)] = pMem[GetMemIndex(n)] ^ GetMemMask(n);
-    //cout << *this << endl;
+    if (pMem[GetMemIndex(n)])
+        pMem[GetMemIndex(n)] = pMem[GetMemIndex(n)] ^ GetMemMask(n);
 }
 
 int TBitField::GetBit(const int n) const // получить значение бита
@@ -85,7 +83,6 @@ int TBitField::GetBit(const int n) const // получить значение б
     if (n < 0 || n >= BitLen) {
         throw exception("Invalid bit index");
     }
-    //cout << pMem[GetMemIndex(n)] << " " << GetMemMask(n) << endl;
     if (pMem[GetMemIndex(n)] & GetMemMask(n)) {
         return 1;
     }
