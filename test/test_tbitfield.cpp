@@ -66,7 +66,8 @@ TEST(TBitField, throws_when_set_bit_with_too_large_index)
 {
   TBitField bf(10);
 
-  ASSERT_ANY_THROW(bf.SetBit(11));
+  ASSERT_NO_THROW(bf.SetBit(9));
+  ASSERT_ANY_THROW(bf.SetBit(10));
 }
 
 TEST(TBitField, throws_when_get_bit_with_negative_index)
@@ -80,7 +81,8 @@ TEST(TBitField, throws_when_get_bit_with_too_large_index)
 {
   TBitField bf(10);
 
-  ASSERT_ANY_THROW(bf.GetBit(11));
+  ASSERT_NO_THROW(bf.GetBit(9));
+  ASSERT_ANY_THROW(bf.GetBit(10));
 }
 
 TEST(TBitField, throws_when_clear_bit_with_negative_index)
@@ -94,7 +96,8 @@ TEST(TBitField, throws_when_clear_bit_with_too_large_index)
 {
   TBitField bf(10);
 
-  ASSERT_ANY_THROW(bf.ClrBit(11));
+  ASSERT_NO_THROW(bf.ClrBit(9));
+  ASSERT_ANY_THROW(bf.ClrBit(10));
 }
 
 TEST(TBitField, can_assign_bitfields_of_equal_size)
@@ -255,16 +258,16 @@ TEST(TBitField, invert_plus_and_operator_on_different_size_bitfield)
 {
   const int firstSze = 4, secondSize = 8;
   TBitField firstBf(firstSze), negFirstBf(firstSze), secondBf(secondSize), testBf(secondSize);
-  // firstBf = 0001
+  // firstBf = 1000
   firstBf.SetBit(0);
   negFirstBf = ~firstBf;
-  // negFirstBf = 1110
+  // negFirstBf = 0111
 
   // secondBf = 00011000
   secondBf.SetBit(3);
   secondBf.SetBit(4);
 
-  // testBf = 00001000
+  // testBf = 00010000
   testBf.SetBit(3);
 
   EXPECT_EQ(secondBf & negFirstBf, testBf);
@@ -320,18 +323,42 @@ TEST(TBitField, can_invert_last_bit) {
     negBf = ~bf;
 
     for (int i = 0; i < size - 1; i++) {
-        bf.SetBit(i);
+        expBf.SetBit(i);
     }
     
     EXPECT_EQ(expBf, negBf);
 }
 
 TEST(TBitField, can_invert_zero) {
-    const int size = 1;
+    const int size = 32;
     TBitField bf(size), negBf(size), expBf(size);
 
     negBf = ~bf;
-    expBf.SetBit(0);
+
+    for( int i = 0; i < size; i++ ) {
+        expBf.SetBit(i);
+    }
 
     EXPECT_EQ(expBf, negBf);
+}
+
+TEST(TBitField, can_get_huge_length)
+{
+    TBitField bf(INT_MAX);
+
+    EXPECT_EQ(INT_MAX, bf.GetLength());
+}
+
+TEST(TBitField, compare_bitfields_of_nonequal_size)
+{
+    const int size1 = 2, size2 = 5;
+    TBitField bf1(size1), bf2(size2);
+
+    for( int i = 0; i < min(size1, size2); i++ )
+    {
+        bf1.SetBit(i);
+        bf2.SetBit(i);
+    }
+
+    ASSERT_NE(bf1, bf2);
 }

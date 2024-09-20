@@ -57,6 +57,7 @@ TEST(TSet, compare_two_sets_of_non_equal_sizes)
   TSet set1(size1), set2(size2);
 
   EXPECT_EQ(1, set1 != set2);
+  EXPECT_NE(set1, set2);
 }
 
 TEST(TSet, compare_two_equal_sets)
@@ -295,3 +296,40 @@ TEST(TSet, check_negation_operator)
 
   EXPECT_EQ(expSet, set1);
 }
+
+//  Additional tests
+TEST(TSet, can_negate_last_element) {
+    const int size = 64;
+    TSet set(size), negSet(size), expSet(size);
+
+    set.InsElem(63);
+
+    negSet = ~set;
+
+    for( int i = 0; i < size - 1; i++ ) {
+        expSet.InsElem(i);
+    }
+
+    EXPECT_EQ(expSet, negSet);
+}
+
+TEST(TSet, can_invert_zero) {
+    const int size = 5;
+    TSet set(size), negSet(size), expSet(size);
+
+    negSet = ~set;
+
+    for( int i = 0; i < size; i++ ) {
+        expSet.InsElem(i);
+    }
+
+    EXPECT_EQ(expSet, negSet);
+}
+
+TEST(TSet, can_get_huge_length)
+{
+    TSet set(INT_MAX);
+
+    EXPECT_EQ(INT_MAX, set.GetMaxPower());
+}
+
