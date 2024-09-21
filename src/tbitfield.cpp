@@ -18,7 +18,7 @@ TBitField::TBitField(int len)
         throw exception("Invalid bitfield size");
     }
     BitLen = len;
-    MemLen = (len + SIZE - 1) / SIZE;
+    MemLen = (int)((unsigned int)(len + (unsigned int)SIZE - 1U) / (unsigned int)SIZE);
     pMem = (TELEM*)malloc(MemLen * sizeof(TELEM));
     if (pMem == nullptr) {
         throw exception("No memory allocated");
@@ -164,11 +164,14 @@ TBitField TBitField::operator~(void) // отрицание
     for (int i = 0; i < MemLen; i++) {
         res.pMem[i] = ~pMem[i];
     }
-    TELEM mask = 0;
-    for (int i = 0; i < BitLen % SIZE; i++) {
-        mask += GetMemMask(i);
+    if (BitLen % SIZE) {
+        TELEM mask = 0;
+        for (int i = 0; i < BitLen % SIZE; i++) {
+            mask += GetMemMask(i);
+        }
+        res.pMem[MemLen - 1] = res.pMem[MemLen - 1] & mask;
     }
-    res.pMem[MemLen - 1] = res.pMem[MemLen - 1] & mask;
+    
     return res;
 }
 

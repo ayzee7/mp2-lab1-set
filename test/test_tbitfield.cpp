@@ -320,7 +320,7 @@ TEST(TBitField, can_invert_last_bit) {
     negBf = ~bf;
 
     for (int i = 0; i < size - 1; i++) {
-        bf.SetBit(i);
+        expBf.SetBit(i);
     }
     
     EXPECT_EQ(expBf, negBf);
@@ -334,4 +334,25 @@ TEST(TBitField, can_invert_zero) {
     expBf.SetBit(0);
 
     EXPECT_EQ(expBf, negBf);
+}
+
+TEST(TBitField, can_get_huge_length)
+{
+    TBitField bf(INT_MAX);
+
+    EXPECT_EQ(INT_MAX, bf.GetLength());
+}
+
+TEST(TBitField, compare_bitfields_of_nonequal_size)
+{
+    const int size1 = 2, size2 = 5;
+    TBitField bf1(size1), bf2(size2);
+
+    for (int i = 0; i < min(size1, size2); i++)
+    {
+        bf1.SetBit(i);
+        bf2.SetBit(i);
+    }
+
+    ASSERT_NE(bf1, bf2);
 }
