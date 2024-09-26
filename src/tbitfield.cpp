@@ -18,7 +18,7 @@ TBitField::TBitField(int len)
         throw exception("Invalid bitfield size");
     }
     BitLen = len;
-    MemLen = (int)((unsigned int)(len + (unsigned int)SIZE - 1U) / (unsigned int)SIZE);
+    MemLen = (int)((TELEM)(len + (TELEM)SIZE - 1U) / (TELEM)SIZE);
     pMem = (TELEM*)malloc(MemLen * sizeof(TELEM));
     if (pMem == nullptr) {
         throw exception("No memory allocated");
@@ -51,7 +51,7 @@ int TBitField::GetMemIndex(const int n) const // индекс Мем для би
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
 {
-    return TELEM(1 << n);
+    return TELEM((TELEM)1 << n);
 }
 
 // доступ к битам битового поля
